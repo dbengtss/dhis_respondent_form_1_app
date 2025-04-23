@@ -19,16 +19,16 @@ ORG_UNIT_ID = os.getenv("ORG_UNIT_ID")
 # att ids found in mnt > trck etity att > eplis far r > id & api
 
 ATTRIBUTE_IDS = {
-    "name": "att_id",
-    "email": "att_id",
-    "carpha_training": "att_id",
-    "role": "att_id",
-    "diseases": "att_id",
-    "certifications": "att_id",
-    "status": "att_id",
-    "notice": "att_id",
-    "language": "att_id",
-    "education_level": "att_id",
+    "name": os.getenv("ATTRIBUTE_ID_name"),
+    "email": os.getenv("ATTRIBUTE_ID_email"),
+    "carpha_training": os.getenv("ATTRIBUTE_ID_carpha_training"),
+    "role": os.getenv("ATTRIBUTE_ID_role"),
+    "diseases": os.getenv("ATTRIBUTE_ID_diseases"),
+    "certifications": os.getenv("ATTRIBUTE_ID_certifications"),
+    "status": os.getenv("ATTRIBUTE_ID_status"),
+    "notice": os.getenv("ATTRIBUTE_ID_notice"),
+    "language": os.getenv("ATTRIBUTE_ID_language"),
+    "education_level": os.getenv("ATTRIBUTE_ID_education_level"),
 }
 
 @app.route('/submit', methods=['POST'])
