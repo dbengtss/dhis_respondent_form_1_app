@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Outbreak Responder Registration</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.css"/>
+  <style>
+    #map { height: 300px; width: 100%; margin-top: 10px; }
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+    label, fieldset { display: block; margin-top: 15px; }
+    fieldset { border: 1px solid #ccc; padding: 10px; }
+    legend { font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <h2>Outbreak Responder Registration Form</h2>
+
+  <!-- Consent Section -->
+  <fieldset>
+    <legend>Consent</legend>
+    <p>
+      This survey is to be included in the Collect, Monitor, and Match (CMM) system to match emergency responders with emerging and/or ongoing outbreaks. This system aims to improve human resource allocation and mobilisation during outbreaks in CARPHA member states. By pressing "OK" you are agreeing to be included in the database of emergency outbreak responders.
+    </p>
+    <p>
+      This survey is intended for CARPHA-trained individuals certified to respond to communicable disease outbreaks in CARPHA member states. By acknowledging below, you certify that:
+      <ol>
+        <li>The information provided is true to your best knowledge.</li>
+        <li>You agree to be listed as a responder for future outbreaks.</li>
+      </ol>
+    </p>
+    <button type="button" onclick="alert('Consent acknowledged')">OK</button>
+  </fieldset>
+
+  <form id="submitForm" method="POST" action="/submit">
+
+    <label>Name: <input type="text" name="name" required></label>
+    <label>Email: <input type="email" name="email" value="{{email}}" readonly required></label>
+
+    <label>Have you received CARPHA training?
+      <select name="carpha_training" required>
+        <option value="">Select...</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </label>
+
+    <fieldset>
+      <legend>Primary Role During Outbreaks</legend>
+      <select name="role" required>
+        <option value="">Select...</option>
+        <option value="Clinician (MD/Nurse)">Clinician (MD/Nurse)</option>
+        <option value="Veterinary Medicine">Veterinary Medicine</option>
+        <option value="Epidemiologist">Epidemiologist</option>
+        <option value="Lab Technician">Lab Technician</option>
+        <option value="Environmental Health">Environmental Health</option>
+        <option value="Emergency Management / Disaster Response">Emergency Management / Disaster Response</option>
+        <option value="Pharmacy">Pharmacy</option>
+        <option value="Health Communication / Risk Communication">Health Communication / Risk Communication</option>
+        <option value="Logistics">Logistics</option>
+        <option value="Vector Control">Vector Control</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <legend>Infectious Diseases You&rsquo;re Proficient In</legend>
+      <label><input type="checkbox" name="diseases" value="Dengue"> Dengue</label>
+      <label><input type="checkbox" name="diseases" value="Chikungunya"> Chikungunya</label>
+      <label><input type="checkbox" name="diseases" value="Zika"> Zika</label>
+      <label><input type="checkbox" name="diseases" value="COVID-19"> COVID-19</label>
+      <label><input type="checkbox" name="diseases" value="Influenza"> Influenza</label>
+      <label><input type="checkbox" name="diseases" value="Leptospirosis"> Leptospirosis</label>
+      <label><input type="checkbox" name="diseases" value="Gastroenteritis"> Gastroenteritis</label>
+      <label><input type="checkbox" name="diseases" value="Tuberculosis (TB)"> Tuberculosis (TB)</label>
+      <label><input type="checkbox" name="diseases" value="Cholera"> Cholera</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>CARPHA Training Certifications</legend>
+      <label><input type="checkbox" name="certifications" value="Field Hospital Deployment"> Field Hospital Deployment</label>
+      <label><input type="checkbox" name="certifications" value="WASH (Water, Sanitation and Hygiene)"> WASH (Water, Sanitation and Hygiene)</label>
+      <label><input type="checkbox" name="certifications" value="Rapid Needs Assessment"> Rapid Needs Assessment</label>
+      <label><input type="checkbox" name="certifications" value="Cold Chain Management"> Cold Chain Management</label>
+      <label><input type="checkbox" name="certifications" value="PPE & Infection Prevention"> PPE & Infection Prevention</label>
+      <label><input type="checkbox" name="certifications" value="Emergency Logistics"> Emergency Logistics</label>
+    </fieldset>
+
+    <label>Deployment Status:
+      <select name="status" required>
+        <option value="">Select...</option>
+        <option value="Active (available now)">Active (available now)</option>
+        <option value="Standby (available with notice)">Standby (available with notice)</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </label>
+
+    <label>Maximum Notice Needed:
+      <select name="notice" required>
+        <option value="">Select...</option>
+        <option value="Immediate (less than 24 hours)">Immediate (less than 24 hours)</option>
+        <option value="24 - 48 hours">24 - 48 hours</option>
+        <option value="48+ hours">48+ hours</option>
+      </select>
+    </label>
+
+    <label>Primary Language:
+      <select name="language" required>
+        <option value="">Select one...</option>
+        <option value="English">English</option>
+        <option value="Spanish">Spanish</option>
+        <option value="French">French</option>
+        <option value="Papiamento">Papiamento</option>
+        <option value="Dutch">Dutch</option>
+        <option value="Haitian Creole">Haitian Creole</option>
+      </select>
+    </label>
+
+    <label>Highest Level of Education:
+      <select name="education_level" required>
+        <option value="">Select one...</option>
+        <option value="Primary">Primary</option>
+        <option value="Secondary">Secondary</option>
+        <option value="Vocational/Technical">Vocational/Technical</option>
+        <option value="Undergraduate">Undergraduate</option>
+        <option value="Graduate">Graduate</option>
+        <option value="Postgraduate">Postgraduate</option>
+      </select>
+    </label>
+
+    <label>Click your area of operation on the map:</label>
+    <div id="map"></div>
+    <input type="hidden" name="latitude" id="latitude">
+    <input type="hidden" name="longitude" id="longitude">
+
+    <p><em>Zoom in and click your primary location. Coordinates will auto-fill.</em></p>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+
+  <script>
+    var map = L.map('map').setView([14.6, -61.0], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker;
+    map.on('click', function(e) {
+      if (marker) {
+        map.removeLayer(marker);
+      }
+      marker = L.marker(e.latlng).addTo(map);
+      document.getElementById("latitude").value = e.latlng.lat;
+      document.getElementById("longitude").value = e.latlng.lng;
+    });
+  </script>
+</body>
+</html>

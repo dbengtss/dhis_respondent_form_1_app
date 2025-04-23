@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verify Your Email</title>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    label { display: block; margin-top: 10px; }
+    .info { color: blue; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Step 1: Verify Your Email</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, msg in messages %}
+      <p class="{{category}}">{{ msg }}</p>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST" action="/verify-email">
+    <label>Email:
+      <input type="email" name="email" required>
+    </label>
+    <button type="submit">Send Verification Link</button>
+  </form>
+</body>
+</html>
